@@ -30,11 +30,9 @@ int main(void) {
     struct sockaddr_in client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
 
-    int ad = accept(sd, (struct sockaddr*)&client_addr, &client_addr_len);
-    printf("accept: %d\n", ad);
-
     pid_t exec = fork();
     if(exec == 0) {
+        sleep(1);
         // TODO: connect to parent
         int client_sd = socket(AF_INET, SOCK_STREAM, 0);
         struct sockaddr_in new_client_addr;
@@ -47,6 +45,8 @@ int main(void) {
         int sc = connect(client_sd, (const struct sockaddr*)&client_addr, client_addr_len);
         printf("connect: %d\n", sc);
     } else {
+        int ad = accept(sd, (struct sockaddr*)&client_addr, &client_addr_len);
+        printf("accept: %d\n", ad);
         wait(NULL);
     }
     
