@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #define BACKLOG_SZ 5
+#define MSG_LEN 1000
 
 int main(void) {
     int sd = socket(AF_INET, SOCK_STREAM, 0);
@@ -45,11 +46,19 @@ int main(void) {
         int sc = connect(client_sd, (const struct sockaddr*)&client_addr, sizeof(client_addr));
         printf("connect: %d\n", sc);
 
+        char buff[] = "Hello Server!\n";
+        write(sc, buff, strnlen(buff, MSG_LEN));
+
         close(client_sd);
     } else {
         int ad = accept(sd, (struct sockaddr*)&addr, &addr_len);
         printf("accept: %d\n", ad);
+
+        char buff[MSG_LEN];
+        read(ad, buff, MSG_LEN);
+        printf("message: %s\n", buff);
         wait(NULL);
+        close(ad);
     }
     
     close(sd);
