@@ -3,6 +3,7 @@
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <sys/un.h>
 
 #include <sys/wait.h>
 #include <unistd.h>
@@ -15,7 +16,7 @@ int main(void) {
     // makes entire struct 0
     memset(&addr, 0, sizeof(addr));
     addr.sun_family = AF_LOCAL;
-    srncopy(addr.sun_path, );
+    strncpy(addr.sun_path, "../server", sizeof(addr.sun_path) - 1);
     
     int bd = bind(sd, (const struct sockaddr*)&addr, sizeof(addr));
 
