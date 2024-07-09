@@ -35,14 +35,16 @@ int main(void) {
         sleep(1);
         // TODO: connect to parent
         int client_sd = socket(AF_INET, SOCK_STREAM, 0);
+        printf("client socket: %d\n", client_sd);
+
         struct sockaddr_in new_client_addr;
+
         memset(&new_client_addr, 0, sizeof(new_client_addr));
         new_client_addr.sin_family = AF_INET;
         new_client_addr.sin_port = htons(8080);
-        // loopback allows local connection
         new_client_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
-        int sc = connect(client_sd, (const struct sockaddr*)&client_addr, client_addr_len);
+        int sc = connect(client_sd, (const struct sockaddr*)&new_client_addr, sizeof(new_client_addr));
         printf("connect: %d\n", sc);
     } else {
         int ad = accept(sd, (struct sockaddr*)&client_addr, &client_addr_len);
