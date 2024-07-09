@@ -19,7 +19,6 @@ int main(void) {
     strncpy(addr.sun_path, "./server", sizeof(addr.sun_path) - 1);
     
     int bd = bind(sd, (const struct sockaddr*)&addr, sizeof(addr));
-
     printf("bind: %d\n", bd);
 
     pid_t exec = fork();
@@ -27,6 +26,8 @@ int main(void) {
         // TODO: connect to parent
         int sc = connect(sd, (const struct sockaddr*)&addr, sizeof(addr));
         printf("connect: %d\n", sc);
+        char* args[] = {"-L", NULL};
+        execvp("pwd", args);
     } else {
         wait(NULL);
     }
