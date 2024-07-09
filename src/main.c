@@ -16,7 +16,7 @@ int main(void) {
     // makes entire struct 0
     memset(&addr, 0, sizeof(addr));
     addr.sun_family = AF_LOCAL;
-    strncpy(addr.sun_path, "../server", sizeof(addr.sun_path) - 1);
+    strncpy(addr.sun_path, "./server", sizeof(addr.sun_path) - 1);
     
     int bd = bind(sd, (const struct sockaddr*)&addr, sizeof(addr));
 
@@ -25,9 +25,12 @@ int main(void) {
     pid_t exec = fork();
     if(exec == 0) {
         // TODO: connect to parent
+        int sc = connect(sd, (const struct sockaddr*)&addr, sizeof(addr));
+        printf("connect: %d\n", sc);
     } else {
         wait(NULL);
     }
     
+    // TODO: close socket
     return 0;
 }
