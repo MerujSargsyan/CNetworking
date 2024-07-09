@@ -15,6 +15,7 @@ int main(void) {
     printf("sock: %d\n", sd);
     
     struct sockaddr_in addr;
+    socklen_t addr_len = sizeof(addr);
     // makes entire struct 0
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
@@ -27,9 +28,6 @@ int main(void) {
     int ld = listen(sd, BACKLOG_SZ);
     printf("listen: %d\n", ld);
 
-    struct sockaddr_in client_addr;
-    socklen_t client_addr_len = sizeof(client_addr);
-
     pid_t exec = fork();
     if(exec == 0) {
         sleep(1);
@@ -37,21 +35,23 @@ int main(void) {
         int client_sd = socket(AF_INET, SOCK_STREAM, 0);
         printf("client socket: %d\n", client_sd);
 
-        struct sockaddr_in new_client_addr;
+        struct sockaddr_in client_addr;
 
-        memset(&new_client_addr, 0, sizeof(new_client_addr));
-        new_client_addr.sin_family = AF_INET;
-        new_client_addr.sin_port = htons(8080);
-        new_client_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        memset(&client_addr, 0, sizeof(client_addr));
+        client_addr.sin_family = AF_INET;
+        client_addr.sin_port = htons(8080);
+        client_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
-        int sc = connect(client_sd, (const struct sockaddr*)&new_client_addr, sizeof(new_client_addr));
+        int sc = connect(client_sd, (const struct sockaddr*)&client_addr, sizeof(client_addr));
         printf("connect: %d\n", sc);
+
+        close(client_sd);
     } else {
-        int ad = accept(sd, (struct sockaddr*)&client_addr, &client_addr_len);
+        int ad = accept(sd, (struct sockaddr*)&addr, &addr_len);
         printf("accept: %d\n", ad);
         wait(NULL);
     }
     
-    // TODO: close socket
+    close(sd);
     return 0;
 }
