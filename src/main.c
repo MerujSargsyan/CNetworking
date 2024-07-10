@@ -3,13 +3,19 @@
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <sys/un.h>
 
 #include <sys/wait.h>
 #include <unistd.h>
 
 #define BACKLOG_SZ 5
 #define MSG_LEN 50
+
+void print_ip(struct sockaddr_in addr) {
+    char ip4[1000]; // IP length
+    inet_ntop(AF_INET, &(addr.sin_addr), ip4, 1000);
+
+    printf("IP: %s\n", ip4);
+}
 
 int main(void) {
     int server_socket = socket(AF_INET, SOCK_STREAM, 0); // create a socket for the server
@@ -22,6 +28,8 @@ int main(void) {
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(8080);
     server_addr.sin_addr.s_addr = INADDR_ANY;
+
+    print_ip(server_addr);
     
     // binds the server_socket to the adress struct
     bind(server_socket, (const struct sockaddr*)&server_addr, sizeof(server_addr));
