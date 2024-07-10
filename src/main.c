@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 #define BACKLOG_SZ 5
-#define MSG_LEN 50 
+#define MSG_LEN 50
 
 int main(void) {
     int server_socket = socket(AF_INET, SOCK_STREAM, 0); // create a socket for the server
@@ -24,9 +24,9 @@ int main(void) {
     server_addr.sin_addr.s_addr = INADDR_ANY;
     
     // binds the server_socket to the adress struct
-    int bd = bind(server_socket, (const struct sockaddr*)&server_addr, sizeof(server_addr));
+    bind(server_socket, (const struct sockaddr*)&server_addr, sizeof(server_addr));
 
-    int ld = listen(server_socket, BACKLOG_SZ);
+    listen(server_socket, BACKLOG_SZ);
 
     pid_t exec = fork();
     if(exec == 0) {
@@ -38,16 +38,16 @@ int main(void) {
         struct sockaddr_in client_addr; // NOTE: we do not bind because client binds to server
 
         // initialize socket
-        memset(&client_addr, 0, sizeof(client_addr));
+        memset(&client_addr, '\0', sizeof(client_addr));
         client_addr.sin_family = AF_INET;
         client_addr.sin_port = htons(8080);
         client_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
         // connect to server
-        int sc = connect(client_sd, (const struct sockaddr*)&server_addr, sizeof(server_addr));
+        connect(client_sd, (const struct sockaddr*)&server_addr, sizeof(server_addr));
 
-        char buff[] = "Hello Server!\n";
-        write(client_sd, buff, strnlen(buff, MSG_LEN));
+        char buff[] = "Sticking out your GYATT FOR THE RIZZLER!\n";
+        write(client_sd, buff, MSG_LEN);
 
         close(client_sd);
     } else {
@@ -55,7 +55,10 @@ int main(void) {
 
         char buff[MSG_LEN];
         read(ad, buff, MSG_LEN);
-        printf("message: %s\n", buff);
+        
+        // TODO: how to read perfect size?
+        buff[41] = 0;
+        printf("message: %s", buff);
         wait(NULL);
         close(ad);
     }
