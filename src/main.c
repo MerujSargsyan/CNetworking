@@ -43,11 +43,11 @@ int main(void) {
         client_addr.sin_port = htons(8080);
         client_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
-        int sc = connect(client_sd, (const struct sockaddr*)&client_addr, sizeof(client_addr));
+        int sc = connect(client_sd, (const struct sockaddr*)&addr, sizeof(addr));
         printf("connect: %d\n", sc);
 
         char buff[] = "Hello Server!\n";
-        write(sc, buff, strnlen(buff, MSG_LEN));
+        write(client_sd, buff, strnlen(buff, MSG_LEN));
 
         close(client_sd);
     } else {
