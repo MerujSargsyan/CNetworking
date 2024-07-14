@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     struct sockaddr_in client_addr; // NOTE: we do not bind because client binds to server
 
     // initialize socket
-    memset(&client_addr, '\0', sizeof(client_addr));
+    memset(&client_addr, 0, sizeof(client_addr));
     client_addr.sin_family = AF_INET;
     client_addr.sin_port = htons(8080);
     client_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
